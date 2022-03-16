@@ -7,7 +7,12 @@ public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] int maxHitPoints = 5;
 
+    private Enemy enemy;
     private int curHitPoints;
+
+    private void Start() {
+        enemy = GetComponent<Enemy>();
+    }
 
     // Start is called before the first frame update
     void OnEnable()
@@ -24,6 +29,7 @@ public class EnemyHealth : MonoBehaviour
         curHitPoints--;
         if (curHitPoints <= 0) {
             gameObject.SetActive(false);
+            enemy.AddReward();
         }
     }
 }
