@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_text
       value: -1,0
       objectReference: {fileID: 0}
+    - target: {fileID: 1124234633491388556, guid: 06f08916351a9454daad7d401cfbdec8, type: 3}
+      propertyPath: isPlaceable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4780643072770203315, guid: 06f08916351a9454daad7d401cfbdec8, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -65,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: -8469494145858465668, guid: af50c4e21f0e9b9419ff00e3c39e7711, type: 3}
     - target: {fileID: 8424924932910355537, guid: 06f08916351a9454daad7d401cfbdec8, type: 3}
       propertyPath: m_Name
-      value: Tile_RoadStraight
+      value: Tile_Road_Straight
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06f08916351a9454daad7d401cfbdec8, type: 3}
