@@ -15,8 +15,8 @@ public class CoordLabel : MonoBehaviour
     Waypoint waypoint;
     
     private void Awake() {
-        label.enabled = false;
         label = GetComponent<TextMeshPro>();
+        label.enabled = false;
         waypoint = GetComponentInParent<Waypoint>();
         DisplayCoords();
         UpdateName();
@@ -29,7 +29,7 @@ public class CoordLabel : MonoBehaviour
         if (!Application.isPlaying) {
             DisplayCoords();
             UpdateName();
-        }
+        }   
         ColorCoords();
         ToggleLabels(); 
     }

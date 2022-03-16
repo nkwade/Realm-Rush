@@ -9,12 +9,27 @@ public class TargetLocator : MonoBehaviour
     
     private Transform target;
 
-    private void Start() {
-        target = FindObjectOfType<EnemyMovement>().transform;
+    private void Update() {
+        FindClosestTarget();
+        AimWeapon();
     }
 
-    private void Update() {
-        AimWeapon();
+    private void FindClosestTarget()
+    {
+        Enemy[] enemies = FindObjectsOfType<Enemy>();
+        Transform closestTarget = null;
+        float maxDist = Mathf.Infinity;
+
+        foreach (Enemy enemy in enemies) {
+            float targDis = Vector3.Distance(transform.position, enemy.transform.position);
+
+            if (targDis < maxDist) {
+                closestTarget = enemy.transform;
+                maxDist = targDis;
+            }
+        }
+
+        target = closestTarget;
     }
 
     private void AimWeapon()
