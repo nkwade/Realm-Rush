@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7678477763367692281}
   - component: {fileID: 4780643072770203315}
   - component: {fileID: 8322084396710853159}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 6037288212552517979}
   - component: {fileID: 1124234633491388556}
   - component: {fileID: 3652910218049439303}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: (0,0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4139978067947462412}
   - component: {fileID: 724070772179836399}
   - component: {fileID: 5747199037756418251}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Coord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,3 +332,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   blockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  exploredColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  pathColor: {r: 1, g: 0.5, b: 0, a: 1}
