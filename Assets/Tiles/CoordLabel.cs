@@ -5,6 +5,7 @@ using TMPro;
 using System;
 
 [ExecuteAlways]
+[RequireComponent(typeof(TextMeshPro))]
 public class CoordLabel : MonoBehaviour
 {
     [SerializeField] Color defaultColor = Color.white;
@@ -29,8 +30,9 @@ public class CoordLabel : MonoBehaviour
         if (!Application.isPlaying) {
             DisplayCoords();
             UpdateName();
+            label.enabled = true;
         }   
-        ColorCoords();
+        SetLabelColor();
         ToggleLabels(); 
     }
 
@@ -46,7 +48,7 @@ public class CoordLabel : MonoBehaviour
         transform.parent.name = $"({coords.x},{coords.y})";
     }
     
-    private void ColorCoords()
+    private void SetLabelColor()
     {
         if (waypoint.IsPlaceable) {
             label.color = defaultColor;
