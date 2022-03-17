@@ -1,62 +1,81 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PathFinder : MonoBehaviour
 {
-    [SerializeField] Vector2Int startCoords;
-    public Vector2Int StartCoords {get {return startCoords;}}
-    [SerializeField] Vector2Int destinationCoords;
-    public Vector2Int DestinationCoords {get {return destinationCoords;}}
+    [SerializeField] Vector2Int startCoordinates;
+    public Vector2Int StartCoordinates { get { return startCoordinates; } }
 
-    Vector2Int[] directions = {Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down};
+    [SerializeField] Vector2Int destinationCoordinates;
+    public Vector2Int DestinationCoordinates { get { return destinationCoordinates; } }
+
+    Node startNode;
+    Node destinationNode;
+    Node currentSearchNode;
+    
+    Queue<Node> frontier = new Queue<Node>();
+    Dictionary<Vector2Int, Node> reached = new Dictionary<Vector2Int, Node>();
+
+    Vector2Int[] directions = { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
     GridManager gridManager;
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
-    Node startNode; 
-    Node destinationNode;
-    Node currSearchNode;
 
-    Dictionary<Vector2Int, Node> reached = new Dictionary<Vector2Int, Node>();
-    Queue<Node> frontier = new Queue<Node>();
-
-    private void Awake() {
+    void Awake()
+    {
         gridManager = FindObjectOfType<GridManager>();
-
-        if (gridManager != null) {
+        if(gridManager != null)
+        {
             grid = gridManager.Grid;
-            startNode = grid[startCoords];
-            destinationNode = grid[destinationCoords];
+            startNode = grid[startCoordinates];
+            destinationNode = grid[destinationCoordinates];
         }
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         GetNewPath();
     }
 
-    private void ExploreNeighbors()
+    public List<Node> GetNewPath()
+    {
+        return GetNewPath(startCoordinates);
+    }
+
+    public List<Node> GetNewPath(Vector2Int coordinates)
+    {
+        gridManager.ResetNodes();
+        BreadthFirstSearch(coordinates);
+        return BuildPath();
+    }
+
+    void ExploreNeighbors()
     {
         List<Node> neighbors = new List<Node>();
 
-        foreach(Vector2Int direction in directions) {
-            Vector2Int neigborCoords = currSearchNode.coords + direction;
+        foreach(Vector2Int direction in directions)
+        {
+            Vector2Int neighborCoords = currentSearchNode.coordinates + direction;
 
-            if (grid.ContainsKey(neigborCoords)) {
-                neighbors.Add(grid[neigborCoords]);
+            if(grid.ContainsKey(neighborCoords))
+            {
+                neighbors.Add(grid[neighborCoords]);
             }
         }
 
-        foreach(Node neighbor in neighbors) {
-            if (!reached.ContainsKey(neighbor.coords) && neighbor.isWalkable) {
-                neighbor.connectedTo = currSearchNode;
-                reached.Add(neighbor.coords, neighbor);
+        foreach(Node neighbor in neighbors)
+        {
+            if(!reached.ContainsKey(neighbor.coordinates) && neighbor.isWalkable)
+            {
+                neighbor.connectedTo = currentSearchNode;
+                reached.Add(neighbor.coordinates, neighbor);
                 frontier.Enqueue(neighbor);
             }
         }
     }
 
-    private void BreadthFirstSearch(Vector2Int coords) {
+    void BreadthFirstSearch(Vector2Int coordinates)
+    {
         startNode.isWalkable = true;
         destinationNode.isWalkable = true;
 
@@ -65,61 +84,62 @@ public class PathFinder : MonoBehaviour
 
         bool isRunning = true;
 
-        frontier.Enqueue(grid[coords]);
-        reached.Add(coords, grid[coords]);
+        frontier.Enqueue(grid[coordinates]);
+        reached.Add(coordinates, grid[coordinates]);
 
-        while (frontier.Count > 0 && isRunning) {
-            currSearchNode = frontier.Dequeue();
-            currSearchNode.isExplored = true;
+        while(frontier.Count > 0 && isRunning)
+        {
+            currentSearchNode = frontier.Dequeue();
+            currentSearchNode.isExplored = true;
             ExploreNeighbors();
-            if (currSearchNode.coords == destinationCoords) {isRunning = false;}
+            if(currentSearchNode.coordinates == destinationCoordinates)
+            {
+                isRunning = false;
+            }
         }
     }
 
-    List<Node> BuildPath() {
+    List<Node> BuildPath()
+    {
         List<Node> path = new List<Node>();
-        Node currNode = destinationNode;
+        Node currentNode = destinationNode;
+        path.Add(currentNode);
+        currentNode.isPath = true;
 
-        path.Add(currNode);
-        currNode.isPath = true;
-
-        while (currNode.connectedTo != null) {
-            currNode = currNode.connectedTo;
-            path.Add(currNode);
-            currNode.isPath = true;
+        while(currentNode.connectedTo != null)
+        {
+            currentNode = currentNode.connectedTo;
+            path.Add(currentNode);
+            currentNode.isPath = true;
         }
 
         path.Reverse();
+
         return path;
     }
 
-    public List<Node> GetNewPath() {
-        return GetNewPath(startCoords);
-    }
+    public bool WillBlockPath(Vector2Int coordinates)
+    {
+        if(grid.ContainsKey(coordinates))
+        {
+            bool previousState = grid[coordinates].isWalkable;
 
-    public List<Node> GetNewPath(Vector2Int coords) {
-        gridManager.ResetNodes();
-        BreadthFirstSearch(coords);
-        return BuildPath();
-    }
-
-    public bool WillBlockPath(Vector2Int coords) {
-        if (grid.ContainsKey(coords)) {
-            bool prevState = grid[coords].isWalkable;
-            grid[coords].isWalkable = false;
+            grid[coordinates].isWalkable = false;
             List<Node> newPath = GetNewPath();
-            grid[coords].isWalkable = prevState;
+            grid[coordinates].isWalkable = previousState;
 
-            if (newPath.Count <= 1) {
+            if(newPath.Count <= 1)
+            {
                 GetNewPath();
                 return true;
             }
         }
 
-        return false;
+        return false; 
     }
 
-    public void NotifyRecievers() {
+    public void NotifyReceivers()
+    {
         BroadcastMessage("RecalculatePath", false, SendMessageOptions.DontRequireReceiver);
     }
 }

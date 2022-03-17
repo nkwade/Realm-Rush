@@ -20,7 +20,7 @@ public class Tile : MonoBehaviour
 
     private void Start() {
         if (gridManager != null) {
-            coords = gridManager.GetCoordsFromPos(transform.position);
+            coords = gridManager.GetCoordinatesFromPosition(transform.position);
 
             if (!isPlaceable) {
                 gridManager.BlockNode(coords);
@@ -33,7 +33,7 @@ public class Tile : MonoBehaviour
             bool isSuccessful = towerPrefab.CreateTower(towerPrefab, transform.position);
             if (isSuccessful) {
                 gridManager.BlockNode(coords);
-                pathFinder.NotifyRecievers();
+                pathFinder.NotifyReceivers();
             }
         }
     }

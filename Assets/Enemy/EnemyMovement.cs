@@ -6,70 +6,74 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] [Range(0f,10f)] float speed = 1f; 
-
+    [SerializeField] [Range(0f, 5f)] float speed = 1f; 
+    
     List<Node> path = new List<Node>();
-
-    private Enemy enemy;
+    
+    Enemy enemy;
     GridManager gridManager;
-    PathFinder pathFinder;
+    PathFinder pathfinder;
 
-    // Start is called before the first frame update
-    private void OnEnable() {
+    void OnEnable()
+    {
         ReturnToStart();
         RecalculatePath(true);
     }
 
-    private void Awake() {
+    void Awake()
+    {
         enemy = GetComponent<Enemy>();
         gridManager = FindObjectOfType<GridManager>();
-        pathFinder = FindObjectOfType<PathFinder>();
+        pathfinder = FindObjectOfType<PathFinder>();
     }
 
-    private void Start() {
-        enemy = GetComponent<Enemy>();
-    }
+    void RecalculatePath(bool resetPath)
+    {
+        Vector2Int coordinates = new Vector2Int();
 
-    private void RecalculatePath(bool resetPath) {
-        Vector2Int coords = new Vector2Int();
-        if (resetPath) {
-            coords = pathFinder.StartCoords;
-        } else {
-            coords = gridManager.GetCoordsFromPos(transform.position);
+        if(resetPath)
+        {
+            coordinates = pathfinder.StartCoordinates;
         }
+        else
+        {
+            coordinates = gridManager.GetCoordinatesFromPosition(transform.position);
+        }
+
         StopAllCoroutines();
         path.Clear();
-        path = pathFinder.GetNewPath(coords);
-        StartCoroutine(FollowPath());   
-    }
-    
-    private void ReturnToStart() {
-        transform.position = gridManager.GetPosFromCoords(pathFinder.StartCoords);
+        path = pathfinder.GetNewPath(coordinates);
+        StartCoroutine(FollowPath());
     }
 
-    private IEnumerator FollowPath()
+    void ReturnToStart()
     {
-        for (int i = 1; i < path.Count; i++) {
-            Vector3 startPos = transform.position;
-            Vector3 endPos = gridManager.GetPosFromCoords(path[i].coords);
-            float travelPerc = 0f;
-            
-            transform.LookAt(endPos);
+        transform.position = gridManager.GetPositionFromCoordinates(pathfinder.StartCoordinates);
+    }
 
-            while (travelPerc < 1f) {
-                travelPerc += Time.deltaTime * speed;
-                transform.position = Vector3.Lerp(startPos, endPos, travelPerc);
+    void FinishPath()
+    {
+        enemy.RemoveReward();
+        gameObject.SetActive(false);
+    }
+
+    IEnumerator FollowPath() 
+    {
+        for(int i = 1; i < path.Count; i++) 
+        {
+            Vector3 startPosition = transform.position;
+            Vector3 endPosition = gridManager.GetPositionFromCoordinates(path[i].coordinates);
+            float travelPercent = 0f;
+
+            transform.LookAt(endPosition);
+
+            while(travelPercent < 1f) {
+                travelPercent += Time.deltaTime * speed;
+                transform.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
                 yield return new WaitForEndOfFrame();
             }
-           
         }
-
-        EndOfPath();
-    }
-
-    private void EndOfPath()
-    {
-        gameObject.SetActive(false);
-        enemy.RemoveReward();
+        
+        FinishPath();
     }
 }
