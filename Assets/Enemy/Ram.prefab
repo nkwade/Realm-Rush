@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 583285900333732399}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0000019073486, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -48,14 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423c0ec437cc9ad4fb9b16d0ef4d75e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   speed: 1
 --- !u!65 &6896000052042522019
 BoxCollider:
@@ -83,6 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHitPoints: 5
+  diffRamp: 1
 --- !u!114 &-2731670523289805527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,6 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d27dd5e1366942d4d84a75a1556ef124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reward: 25
+  penalty: 25
 --- !u!1 &8472947172508281590
 GameObject:
   m_ObjectHideFlags: 0

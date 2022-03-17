@@ -10,15 +10,19 @@ public class CoordLabel : MonoBehaviour
 {
     [SerializeField] Color defaultColor = Color.white;
     [SerializeField] Color blockedColor = Color.gray;
+    [SerializeField] Color exploredColor = Color.yellow;
+    [SerializeField] Color pathColor = new Color(1f, 0.5f, 0f);
 
     TextMeshPro label;
     private Vector2Int coords = new Vector2Int();
-    Waypoint waypoint;
-    
+    //Waypoint waypoint;
+    GridManager gridManager;
+
     private void Awake() {
+        gridManager = FindObjectOfType<GridManager>();
         label = GetComponent<TextMeshPro>();
         label.enabled = false;
-        waypoint = GetComponentInParent<Waypoint>();
+        //waypoint = GetComponentInParent<Waypoint>();
         DisplayCoords();
         UpdateName();
         
@@ -39,8 +43,9 @@ public class CoordLabel : MonoBehaviour
 
     private void DisplayCoords()
     {
-        coords.x = Mathf.RoundToInt(transform.position.x / UnityEditor.EditorSnapSettings.move.x);
-        coords.y = Mathf.RoundToInt(transform.position.z / UnityEditor.EditorSnapSettings.move.z);
+        if (gridManager == null) {return;}
+        coords.x = Mathf.RoundToInt(transform.parent.position.x / gridManager.UnityGridSize);
+        coords.y = Mathf.RoundToInt(transform.parent.position.z / gridManager.UnityGridSize);
         label.text = $"{coords.x},{coords.y}";
     }
 
@@ -50,11 +55,29 @@ public class CoordLabel : MonoBehaviour
     
     private void SetLabelColor()
     {
-        if (waypoint.IsPlaceable) {
-            label.color = defaultColor;
-        } else {
+        if (gridManager == null) {return;}
+
+        Node node = gridManager.GetNode(coords);
+
+        if (node == null) {return;}
+
+        if (!node.isWalkable) {
             label.color = blockedColor;
+        } else if (node.isPath) {
+            label.color = pathColor;
+        } else if (node.isExplored) {
+            label.color = exploredColor;
+        } else {
+            label.color = defaultColor;
         }
+
+
+
+        // if (waypoint.IsPlaceable) {
+        //     label.color = defaultColor;
+        // } else {
+        //     label.color = blockedColor;
+        // }
     }
 
     private void ToggleLabels() {
